@@ -1,0 +1,6 @@
+{
+  "name": "gitfocus",
+  "description": "Organize seus objetivos de estudo em tecnologia com simplicidade, foco e clareza.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
