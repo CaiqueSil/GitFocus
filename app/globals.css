@@ -1,1 +1,36 @@
 @import "tailwindcss";
+
+:root {
+  --bg-app: #121214;
+  --bg-surface: #1A1A1E;
+  --border-subtle: #29292E;
+  --border-strong: #323238;
+  --color-todo: #64B5F6;
+  --color-progress: #FFB74D;
+  --color-done: #81C784;
+}
+
+html, body {
+  background-color: #121214;
+  color: #E1E1E6;
+  color-scheme: dark;
+}
+
+/* Scrollbar estilizada estilo GitHub/Jira Dark */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+::-webkit-scrollbar-track {
+  background: #121214;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #29292E;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #3A3A42;
+}

@@ -19,26 +19,42 @@ export interface GoalFilterOptions {
 
 export const STATUS_CONFIG: Record<GoalStatus, {
   label: string;
+  shortLabel: string;
   description: string;
   badgeClass: string;
   dotColor: string;
+  borderLeftClass: string;
+  hexColor: string;
+  hoverBorderClass: string;
 }> = {
   nao_iniciado: {
-    label: 'Não iniciado',
+    label: 'A Fazer',
+    shortLabel: 'A Fazer',
     description: 'Planejado para iniciar',
-    badgeClass: 'text-amber-700 bg-amber-50 border border-amber-200/80',
-    dotColor: 'bg-amber-500',
+    badgeClass: 'text-[#64B5F6] bg-[#64B5F6]/10 border border-[#64B5F6]/25',
+    dotColor: 'bg-[#64B5F6]',
+    borderLeftClass: 'border-l-[#64B5F6]',
+    hexColor: '#64B5F6',
+    hoverBorderClass: 'hover:border-[#64B5F6]/40',
   },
   em_andamento: {
-    label: 'Em andamento',
+    label: 'Em Progresso',
+    shortLabel: 'Progresso',
     description: 'Estudos em progresso ativo',
-    badgeClass: 'text-indigo-700 bg-indigo-50 border border-indigo-200/80',
-    dotColor: 'bg-indigo-500',
+    badgeClass: 'text-[#FFB74D] bg-[#FFB74D]/10 border border-[#FFB74D]/25',
+    dotColor: 'bg-[#FFB74D]',
+    borderLeftClass: 'border-l-[#FFB74D]',
+    hexColor: '#FFB74D',
+    hoverBorderClass: 'hover:border-[#FFB74D]/40',
   },
   concluido: {
     label: 'Concluído',
+    shortLabel: 'Concluído',
     description: 'Objetivo alcançado com sucesso',
-    badgeClass: 'text-emerald-700 bg-emerald-50 border border-emerald-200/80',
-    dotColor: 'bg-emerald-500',
+    badgeClass: 'text-[#81C784] bg-[#81C784]/10 border border-[#81C784]/25',
+    dotColor: 'bg-[#81C784]',
+    borderLeftClass: 'border-l-[#81C784]',
+    hexColor: '#81C784',
+    hoverBorderClass: 'hover:border-[#81C784]/40',
   },
 };

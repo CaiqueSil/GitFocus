@@ -61,7 +61,7 @@ export default function Home() {
   const handleFormSubmit = (data: GoalFormData) => {
     if (formMode === 'create') {
       storageService.create(data);
-      showToast('Objetivo cadastrado com sucesso!');
+      showToast('Objetivo cadastrado no backlog!');
     } else if (formMode === 'edit' && editingGoal) {
       storageService.update(editingGoal.id, data);
       showToast('Objetivo atualizado com sucesso!');
@@ -90,9 +90,11 @@ export default function Home() {
     const updated = storageService.updateStatus(id, newStatus);
     if (updated) {
       if (newStatus === 'concluido') {
-        showToast('Parabéns! Objetivo marcado como concluído! 🎉');
+        showToast('Parabéns! Objetivo movido para Concluído! 🎉');
+      } else if (newStatus === 'em_andamento') {
+        showToast('Objetivo movido para Em Progresso! 🚀');
       } else {
-        showToast('Status do objetivo atualizado.');
+        showToast('Objetivo movido para A Fazer.');
       }
     }
   };
@@ -104,7 +106,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50 font-sans">
+    <div className="min-h-screen flex flex-col bg-[#121214] text-[#E1E1E6] font-sans antialiased">
       {/* Header com Navegação e Ação */}
       <Header
         onOpenNewGoalModal={handleOpenCreateModal}
@@ -112,40 +114,40 @@ export default function Home() {
       />
 
       {/* Conteúdo Principal */}
-      <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-6 sm:px-6 sm:py-8 space-y-6 sm:space-y-8">
-        {/* Hero Section Acolhedor */}
-        <section className="relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 sm:p-8 shadow-xs">
-          <div className="max-w-2xl">
-            <div className="inline-flex items-center gap-1.5 rounded-md bg-indigo-50 px-2.5 py-1 text-xs font-semibold text-indigo-700">
+      <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-6 sm:px-6 sm:py-8 space-y-6">
+        {/* Hero Section Estilo Dev / Jira / GitHub */}
+        <section className="relative overflow-hidden rounded-2xl border border-[#29292E] bg-[#1A1A1E] p-5 sm:p-7 shadow-sm">
+          <div className="max-w-3xl">
+            <div className="inline-flex items-center gap-2 rounded-md bg-[#121214] px-2.5 py-1 text-xs font-mono text-[#64B5F6] border border-[#29292E]">
               <Terminal className="h-3.5 w-3.5" />
-              <span>git commit -m &quot;aprendizado contínuo&quot;</span>
+              <span>git commit -m &quot;foco continuo nos estudos&quot;</span>
             </div>
 
-            <h1 className="mt-3 text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 leading-tight">
-              Organize seus objetivos de estudo em tecnologia
+            <h1 className="mt-3 text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight text-[#EDEDEF] leading-tight">
+              Gerencie seus objetivos de estudo em tecnologia
             </h1>
 
-            <p className="mt-2 text-sm sm:text-base text-slate-600 leading-relaxed">
-              Mantenha o foco no que você precisa aprender hoje para alcançar a sua próxima oportunidade como desenvolvedor ou estudante tech.
+            <p className="mt-2 text-xs sm:text-sm text-[#8D8D99] leading-relaxed max-w-2xl">
+              Interface desenhada para longas horas de foco. Acompanhe seu progresso de aprendizado com clareza visual, sem sobrecarga ou poluição de cores.
             </p>
 
-            <div className="mt-5 flex flex-wrap items-center gap-3">
+            <div className="mt-4 flex flex-wrap items-center gap-3">
               <button
                 type="button"
                 onClick={handleOpenCreateModal}
-                className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-indigo-700 active:scale-95 transition-all cursor-pointer"
+                className="inline-flex items-center gap-2 rounded-lg bg-[#64B5F6] px-4 py-2.5 text-xs sm:text-sm font-semibold text-[#121214] shadow-sm hover:bg-[#85c6f8] active:scale-95 transition-all cursor-pointer"
               >
-                <Plus className="h-4 w-4" />
-                <span>Cadastrar Novo Objetivo</span>
+                <Plus className="h-4 w-4 stroke-[2.5]" />
+                <span>Novo Objetivo</span>
               </button>
 
               {goals.length === 0 && (
                 <button
                   type="button"
                   onClick={handleLoadSamples}
-                  className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-xs hover:bg-slate-50 transition-all cursor-pointer"
+                  className="inline-flex items-center gap-2 rounded-lg border border-[#29292E] bg-[#121214] px-4 py-2.5 text-xs sm:text-sm font-semibold text-[#8D8D99] hover:bg-[#29292E] hover:text-[#EDEDEF] transition-all cursor-pointer"
                 >
-                  <Sparkles className="h-4 w-4 text-amber-500" />
+                  <Sparkles className="h-4 w-4 text-[#FFB74D]" />
                   <span>Carregar Exemplos Prontos</span>
                 </button>
               )}
@@ -156,20 +158,9 @@ export default function Home() {
         {/* Resumo e Progresso */}
         {isClient && <StatsOverview goals={goals} />}
 
-        {/* Lista de Objetivos (Ordenados: Mais Novo em Cima) */}
+        {/* Quadro Kanban e Lista de Objetivos */}
         {isClient ? (
-          <section aria-label="Objetivos de estudo">
-            <div className="mb-3 flex items-center justify-between">
-              <div>
-                <h2 className="text-lg font-bold text-slate-900">
-                  Meus Objetivos de Estudo
-                </h2>
-                <p className="text-xs text-slate-500">
-                  Adicionados recentemente aparecem no topo
-                </p>
-              </div>
-            </div>
-
+          <section aria-label="Quadro de objetivos de estudo" className="pt-2">
             <GoalList
               goals={goals}
               onEditGoal={handleOpenEditModal}
@@ -182,28 +173,28 @@ export default function Home() {
         ) : (
           <div className="flex h-48 items-center justify-center">
             <div className="text-center">
-              <div className="inline-block h-6 w-6 animate-spin rounded-full border-2 border-indigo-600 border-t-transparent" />
-              <p className="mt-2 text-xs text-slate-500">Carregando seus objetivos...</p>
+              <div className="inline-block h-6 w-6 animate-spin rounded-full border-2 border-[#64B5F6] border-t-transparent" />
+              <p className="mt-2 text-xs text-[#8D8D99] font-mono">Carregando objetivos...</p>
             </div>
           </div>
         )}
       </main>
 
-      {/* Rodapé Acolhedor */}
-      <footer className="mt-auto border-t border-slate-200 bg-white py-6">
-        <div className="mx-auto flex max-w-6xl flex-col sm:flex-row items-center justify-between gap-3 px-4 text-xs text-slate-500 sm:px-6">
+      {/* Rodapé Acolhedor estilo Dev */}
+      <footer className="mt-auto border-t border-[#29292E] bg-[#121214] py-6">
+        <div className="mx-auto flex max-w-7xl flex-col sm:flex-row items-center justify-between gap-3 px-4 text-xs text-[#71717A] sm:px-6">
           <div className="flex items-center gap-2">
-            <Code2 className="h-4 w-4 text-indigo-500" />
-            <span className="font-mono font-semibold text-slate-800">gitfocus</span>
-            <span>· Desenvolvido para impulsionar seus estudos</span>
+            <Code2 className="h-4 w-4 text-[#64B5F6]" />
+            <span className="font-mono font-semibold text-[#C4C4CC]">gitfocus</span>
+            <span>· Desenvolvido para impulsionar sua evolução tech</span>
           </div>
-          <div>
-            Dados salvos localmente no seu navegador via <span className="font-mono text-slate-700">localStorage</span>
+          <div className="font-mono text-[11px] text-[#71717A]">
+            Persistência local via <span className="text-[#8D8D99]">localStorage</span>
           </div>
         </div>
       </footer>
 
-      {/* Modal de Formulário montado com key para resetar o estado limpo */}
+      {/* Modal de Formulário */}
       {isFormModalOpen && (
         <GoalFormModal
           key={editingGoal ? `edit-${editingGoal.id}` : 'create'}
@@ -234,9 +225,9 @@ export default function Home() {
         <aside
           role="status"
           aria-live="polite"
-          className="fixed bottom-5 right-5 z-50 flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-3 text-xs font-medium text-white shadow-lg animate-in fade-in slide-in-from-bottom-2 duration-200"
+          className="fixed bottom-5 right-5 z-50 flex items-center gap-2.5 rounded-xl bg-[#1A1A1E] border border-[#29292E] px-4 py-3 text-xs font-medium text-[#EDEDEF] shadow-2xl shadow-black/80 animate-in fade-in slide-in-from-bottom-2 duration-200"
         >
-          <CheckCheck className="h-4 w-4 text-emerald-400 shrink-0" />
+          <CheckCheck className="h-4 w-4 text-[#81C784] shrink-0" />
           <span>{toastMessage}</span>
         </aside>
       )}

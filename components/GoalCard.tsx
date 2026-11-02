@@ -10,6 +10,7 @@ interface GoalCardProps {
   onEdit: (goal: Goal) => void;
   onDeleteRequest: (goal: Goal) => void;
   onStatusChange: (id: string, newStatus: GoalStatus) => void;
+  compact?: boolean;
 }
 
 export const GoalCard: React.FC<GoalCardProps> = ({
@@ -17,110 +18,126 @@ export const GoalCard: React.FC<GoalCardProps> = ({
   onEdit,
   onDeleteRequest,
   onStatusChange,
+  compact = false,
 }) => {
   const isCompleted = goal.status === 'concluido';
   const deadlineInfo = getDeadlineInfo(goal.deadline, isCompleted);
   const statusInfo = STATUS_CONFIG[goal.status];
 
   return (
-    <article className="group relative flex flex-col justify-between rounded-xl border border-slate-200 bg-white p-5 shadow-xs transition-all duration-200 hover:border-slate-300 hover:shadow-sm">
-      {/* Topo do Cartão: Status e Ações */}
+    <article
+      className={`group relative flex flex-col justify-between rounded-xl border border-[#29292E] bg-[#1A1A1E] transition-all duration-200 hover:border-[#3E3E47] hover:shadow-lg hover:shadow-black/40 border-l-4 ${statusInfo.borderLeftClass} ${
+        compact ? 'p-3.5' : 'p-4 sm:p-5'
+      }`}
+    >
+      {/* Topo do Cartão: Tag de Status e Ações */}
       <div>
-        <div className="flex items-start justify-between gap-3">
-          {/* Seletor Rápido de Status Interativo */}
-          <div className="flex items-center gap-1.5">
+        <div className="flex items-start justify-between gap-2">
+          {/* Tag / Pílula texturizada com a cor do status */}
+          <div className="flex items-center gap-1.5 flex-wrap">
             <span
-              className={`inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-medium ${statusInfo.badgeClass}`}
+              className={`inline-flex items-center gap-1.5 rounded-md px-2 py-0.5 text-xs font-semibold ${statusInfo.badgeClass}`}
             >
               <span className={`h-1.5 w-1.5 rounded-full ${statusInfo.dotColor}`} />
               {statusInfo.label}
             </span>
 
-            {/* Ciclo Rápido de Status (UX acolhedor para estudantes) */}
-            <div className="flex items-center gap-0.5 ml-1">
+            {/* Ciclo Rápido de Status (Estilo Dev / Jira) */}
+            <div className="flex items-center gap-0.5 rounded-md bg-[#121214] p-0.5 border border-[#29292E]">
               <button
                 type="button"
                 onClick={() => onStatusChange(goal.id, 'nao_iniciado')}
-                title="Marcar como Não iniciado"
-                className={`rounded p-1 text-xs transition-colors cursor-pointer ${
+                title="Mover para: A Fazer"
+                className={`rounded px-1.5 py-0.5 text-[11px] transition-colors cursor-pointer flex items-center gap-1 ${
                   goal.status === 'nao_iniciado'
-                    ? 'text-amber-700 bg-amber-100/60 font-semibold'
-                    : 'text-slate-400 hover:text-amber-700 hover:bg-slate-100'
+                    ? 'text-[#64B5F6] bg-[#64B5F6]/15 font-semibold'
+                    : 'text-[#8D8D99] hover:text-[#64B5F6] hover:bg-[#1A1A1E]'
                 }`}
               >
-                <Clock className="h-3.5 w-3.5" />
+                <Clock className="h-3 w-3" />
+                <span className="hidden sm:inline">To Do</span>
               </button>
               <button
                 type="button"
                 onClick={() => onStatusChange(goal.id, 'em_andamento')}
-                title="Marcar como Em andamento"
-                className={`rounded p-1 text-xs transition-colors cursor-pointer ${
+                title="Mover para: Em Progresso"
+                className={`rounded px-1.5 py-0.5 text-[11px] transition-colors cursor-pointer flex items-center gap-1 ${
                   goal.status === 'em_andamento'
-                    ? 'text-indigo-700 bg-indigo-100/60 font-semibold'
-                    : 'text-slate-400 hover:text-indigo-700 hover:bg-slate-100'
+                    ? 'text-[#FFB74D] bg-[#FFB74D]/15 font-semibold'
+                    : 'text-[#8D8D99] hover:text-[#FFB74D] hover:bg-[#1A1A1E]'
                 }`}
               >
-                <PlayCircle className="h-3.5 w-3.5" />
+                <PlayCircle className="h-3 w-3" />
+                <span className="hidden sm:inline">WIP</span>
               </button>
               <button
                 type="button"
                 onClick={() => onStatusChange(goal.id, 'concluido')}
-                title="Marcar como Concluído"
-                className={`rounded p-1 text-xs transition-colors cursor-pointer ${
+                title="Mover para: Concluído"
+                className={`rounded px-1.5 py-0.5 text-[11px] transition-colors cursor-pointer flex items-center gap-1 ${
                   goal.status === 'concluido'
-                    ? 'text-emerald-700 bg-emerald-100/60 font-semibold'
-                    : 'text-slate-400 hover:text-emerald-700 hover:bg-slate-100'
+                    ? 'text-[#81C784] bg-[#81C784]/15 font-semibold'
+                    : 'text-[#8D8D99] hover:text-[#81C784] hover:bg-[#1A1A1E]'
                 }`}
               >
-                <CheckCircle2 className="h-3.5 w-3.5" />
+                <CheckCircle2 className="h-3 w-3" />
+                <span className="hidden sm:inline">Done</span>
               </button>
             </div>
           </div>
 
           {/* Botões de Ação: Editar e Excluir */}
-          <div className="flex items-center gap-1 shrink-0">
+          <div className="flex items-center gap-1 shrink-0 opacity-80 group-hover:opacity-100 transition-opacity">
             <button
               type="button"
               onClick={() => onEdit(goal)}
-              className="inline-flex items-center gap-1 rounded-md px-2.5 py-1 text-xs font-medium text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-indigo-500 cursor-pointer"
+              className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium text-[#A1A1AA] hover:bg-[#29292E] hover:text-[#EDEDEF] transition-colors cursor-pointer"
               title="Editar este objetivo"
               aria-label={`Editar ${goal.title}`}
             >
-              <Edit3 className="h-3.5 w-3.5 text-slate-500" />
-              <span>Editar</span>
+              <Edit3 className="h-3.5 w-3.5" />
+              <span className="hidden md:inline">Editar</span>
             </button>
             <button
               type="button"
               onClick={() => onDeleteRequest(goal)}
-              className="inline-flex items-center gap-1 rounded-md px-2.5 py-1 text-xs font-medium text-rose-600 transition-colors hover:bg-rose-50 hover:text-rose-700 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-rose-500 cursor-pointer"
-              title="Excluir este objetivo (solicitará confirmação)"
+              className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium text-rose-400/90 hover:bg-rose-500/10 hover:text-rose-400 transition-colors cursor-pointer"
+              title="Excluir este objetivo"
               aria-label={`Excluir ${goal.title}`}
             >
               <Trash2 className="h-3.5 w-3.5" />
-              <span>Excluir</span>
+              <span className="hidden md:inline">Excluir</span>
             </button>
           </div>
         </div>
 
         {/* Título do Objetivo */}
-        <h3 className={`mt-3 text-base font-semibold text-slate-900 leading-snug ${
-          isCompleted ? 'line-through text-slate-500' : ''
-        }`}>
+        <h3
+          className={`mt-2.5 text-sm sm:text-base font-semibold leading-snug tracking-tight ${
+            isCompleted
+              ? 'line-through text-[#71717A]'
+              : 'text-[#EDEDEF]'
+          }`}
+        >
           {goal.title}
         </h3>
 
         {/* Descrição */}
-        <p className="mt-2 text-sm leading-relaxed text-slate-600 whitespace-pre-line">
-          {goal.description || 'Nenhuma descrição fornecida.'}
-        </p>
+        {goal.description && (
+          <p
+            className={`mt-1.5 text-xs sm:text-sm leading-relaxed text-[#A1A1AA] line-clamp-3 whitespace-pre-line`}
+          >
+            {goal.description}
+          </p>
+        )}
       </div>
 
       {/* Rodapé do Cartão: Prazo e Data de Criação */}
-      <div className="mt-4 pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2 text-xs">
+      <div className="mt-3.5 pt-2.5 border-t border-[#29292E]/70 flex flex-wrap items-center justify-between gap-2 text-xs">
         {/* Informação do Prazo */}
-        <div className="flex items-center gap-1.5">
-          <Calendar className="h-3.5 w-3.5 text-slate-400" />
-          <span className="font-medium text-slate-700">
+        <div className="flex items-center gap-1.5 text-[#8D8D99]">
+          <Calendar className="h-3.5 w-3.5 text-[#71717A]" />
+          <span className="font-medium text-[#C4C4CC]">
             Prazo: {formatDatePtBR(goal.deadline)}
           </span>
 
@@ -128,10 +145,10 @@ export const GoalCard: React.FC<GoalCardProps> = ({
             <span
               className={`inline-flex items-center gap-1 text-[11px] font-medium ml-1 ${
                 deadlineInfo.isOverdue
-                  ? 'text-rose-600'
+                  ? 'text-rose-400'
                   : deadlineInfo.isDueSoon
-                  ? 'text-amber-600'
-                  : 'text-slate-500'
+                  ? 'text-[#FFB74D]'
+                  : 'text-[#8D8D99]'
               }`}
             >
               {deadlineInfo.isOverdue && <AlertCircle className="h-3 w-3" />}
@@ -140,9 +157,9 @@ export const GoalCard: React.FC<GoalCardProps> = ({
           )}
         </div>
 
-        {/* Data de Adição (garante visibilidade da ordem "mais novo em cima") */}
-        <div className="text-[11px] text-slate-400">
-          Adicionado em {formatCreationDate(goal.createdAt)}
+        {/* Data de Adição */}
+        <div className="text-[11px] text-[#71717A] font-mono">
+          {formatCreationDate(goal.createdAt)}
         </div>
       </div>
     </article>
